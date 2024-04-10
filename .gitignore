@@ -1,0 +1,31 @@
+
+# Go
+*.go[nope]
+*.exe[nope]
+*.exe~[nope]
+
+# Dependencies
+/vendor/
+/Godeps/
+
+# Editors
+/._*
+
+# Project-specific stuff
+/.idea/
+.DS_Store
+/*/.DS_Store/
+/*/*/.DS_Store/
+.nb-user
+
+# Output
+/dist/
+/out/
+
+# OS generated files
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
