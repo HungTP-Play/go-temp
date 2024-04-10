@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,19 +11,19 @@ import (
 )
 
 type AppConfig struct {
-	Port          string
-	LogLevel      string
-	MetricsEnable bool
-	MetricsPort   string
-	MetricsPath   string
+	Port           string
+	LogLevel       string
+	MetricsEnabled bool
+	MetricsPort    string
+	MetricsPath    string
 }
 
 var defaultAppConfig = &AppConfig{
-	Port:          "3000",
-	LogLevel:      "debug",
-	MetricsEnable: false,
-	MetricsPort:   "9090",
-	MetricsPath:   "/metrics",
+	Port:           "3000",
+	LogLevel:       "debug",
+	MetricsEnabled: false,
+	MetricsPort:    "9090",
+	MetricsPath:    "/metrics",
 }
 
 func MergeAppConfigsWithEnv() *AppConfig {
@@ -36,10 +37,7 @@ func MergeAppConfigsWithEnv() *AppConfig {
 		logLevel = defaultAppConfig.LogLevel
 	}
 
-	metricEnable := os.Getenv("METRICS_ENABLE") == "true"
-	if metricEnable {
-		metricEnable = defaultAppConfig.MetricsEnable
-	}
+	metricEnabled := os.Getenv("METRICS_ENABLE") == "true"
 
 	metricPort := os.Getenv("METRICS_PORT")
 	if metricPort == "" {
@@ -52,20 +50,21 @@ func MergeAppConfigsWithEnv() *AppConfig {
 	}
 
 	return &AppConfig{
-		Port:          port,
-		LogLevel:      logLevel,
-		MetricsEnable: metricEnable,
-		MetricsPort:   metricPort,
-		MetricsPath:   metricPath,
+		Port:           port,
+		LogLevel:       logLevel,
+		MetricsEnabled: metricEnabled,
+		MetricsPort:    metricPort,
+		MetricsPath:    metricPath,
 	}
 }
 
 type App struct {
 	Configs *AppConfig
+	Context context.Context
 }
 
 func NewApp(configs *AppConfig) *App {
-	return &App{Configs: configs}
+	return &App{Configs: configs, Context: context.Background()}
 }
 
 func (a *App) Start() {
