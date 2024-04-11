@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  gateway:
+    image: gateway:local
+    build:
+      context: ../.
+      dockerfile: ./build/gateway/Dockerfile
+    ports:
+      - 1111:1111
+    env_file:
+      - ./default.env
+  auth:
+    image: auth:local
+    build:
+      context: ../.
+      dockerfile: ./build/auth/Dockerfile
+    ports:
+      - 2222:2222
+    env_file:
+      - ./default.env
+  db:
+    image: postgres:16.2-alpine3.19
+    ports:
+      - 5432:5432
+    volumes:
+      - temp_postgresqldata:/var/lib/postgresql
+  cache:
+    image: redis:7.2.4-alpine3.19
+    ports:
+      - 6379:6379
+    volumes:
+      - temp_redisdata:/data
+volumes:
+  temp_postgresqldata:
+  temp_redisdata:
